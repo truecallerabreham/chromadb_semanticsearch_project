@@ -1,50 +1,76 @@
 import sys
 import pysqlite3
 sys.modules["sqlite3"] = pysqlite3
+
 import streamlit as st
 import chromadb
 from sentence_transformers import SentenceTransformer
-import fitz
-# creating client object
+import fitz  # PyMuPDF for PDFs
+
+# Create ChromaDB client (non-persistent for now)
 client = chromadb.Client()
-#creating collection inside our client object
+
+# Get or create collection
 if "second_collection" not in [c.name for c in client.list_collections()]:
     collection = client.create_collection(name="second_collection")
 else:
-    collection = client.get_collection(name="second_collection") 
-# loading emedding models for our uploaded files
+    collection = client.get_collection(name="second_collection")
+
+# Load the embedding model
 model = SentenceTransformer("all-MiniLM-L6-v2")
-st.title("Ask Questions from Text & PDF Files")
-upload_files=st.file_uploader("upload files (pdf,txt)",type=["pdf", "txt"],accept_multiple_files=True)
+
+# App UI
+st.title("📄 Ask Questions from Text & PDF Files")
+
+uploaded_files = st.file_uploader("Upload files (PDF, TXT)", type=["pdf", "txt"], accept_multiple_files=True)
+
 def extract_text_from_pdf(file) -> str:
     text = ""
     with fitz.open(stream=file.read(), filetype="pdf") as pdf:
         for page in pdf:
             text += page.get_text()
     return text
-if upload_files:
+
+# Handle uploaded files
+if uploaded_files is not None and len(uploaded_files) > 0:
     for file in uploaded_files:
         filename = file.name
+
+        # Extract text
         if filename.endswith(".txt"):
             text = file.read().decode("utf-8")
         elif filename.endswith(".pdf"):
             text = extract_text_from_pdf(file)
         else:
-            continue  
+            st.warning(f"{filename} is not supported. Skipping.")
+            continue
 
-collection.add(
+        # Get embedding
+        embedding = model.encode(text)
+
+        # Add to ChromaDB
+        collection.add(
             documents=[text],
             embeddings=[embedding.tolist()],
             metadatas=[{"filename": filename}],
             ids=[f"doc-{filename}"]
         )
-st.success(f"{len(uploaded_files)} files uploaded and indexed.")
-query = st.text_input(" Ask something based on your files")
+    
+    st.success(f"✅ {len(uploaded_files)} files uploaded and indexed.")
+else:
+    st.info("Please upload one or more PDF or TXT files.")
+
+# Question input
+query = st.text_input("Ask something based on your files:")
+
+# If query submitted
 if query:
     query_embedding = model.encode(query)
     results = collection.query(query_embeddings=[query_embedding.tolist()], n_results=2)
-st.subheader(" Top Matching Documents:")
-for doc in results["documents"][0]:
-        st.markdown(f"> {doc[:300]}...")
+
+    st.subheader("🔎 Top Matching Documents:")
+    for doc in results["documents"][0]:
+        st.markdown(f"> {doc[:300]}...")  # Preview first 300 characters
+
 
 
