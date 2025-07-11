@@ -69,7 +69,7 @@ if query:
     results = collection.query(query_embeddings=[query_embedding.tolist()], n_results=2)
 
     st.subheader(" Top Matching Documents:")
-    print(results["metadatas"])
+    st.markdown(results["metadatas"])
 
 
 
