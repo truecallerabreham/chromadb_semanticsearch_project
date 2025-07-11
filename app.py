@@ -15,7 +15,7 @@ else:
 # loading emedding models for our uploaded files
 model = SentenceTransformer("all-MiniLM-L6-v2")
 st.title("Ask Questions from Text & PDF Files")
-upload_files=st.file_uploader("upload files (pdf,txt)",type["pdf","txt"],accept_multiple_files=True)
+upload_files=st.file_uploader("upload files (pdf,txt)",type=["pdf", "txt"],accept_multiple_files=True)
 def extract_text_from_pdf(file) -> str:
     text = ""
     with fitz.open(stream=file.read(), filetype="pdf") as pdf:
