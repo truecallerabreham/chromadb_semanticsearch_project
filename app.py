@@ -69,7 +69,7 @@ if query:
     results = collection.query(query_embeddings=[query_embedding.tolist()], n_results=2)
 
     st.subheader(" Top Matching Documents:")
-    for i, doc in enumerate(results["documents"][0]):
+for i, doc in enumerate(results["documents"][0]):
     filename = results["metadatas"][0][i]["filename"]
     st.write(f"File: {filename}")
     st.write(doc[:300] + "...")
