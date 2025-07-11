@@ -5,9 +5,9 @@ sys.modules["sqlite3"] = pysqlite3
 import streamlit as st
 import chromadb
 from sentence_transformers import SentenceTransformer
-import fitz  # PyMuPDF for PDFs
+import fitz  
 
-# Create ChromaDB client (non-persistent for now)
+# Create ChromaDB client 
 client = chromadb.Client()
 
 # Get or create collection
@@ -20,7 +20,7 @@ else:
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # App UI
-st.title("📄 Ask Questions from Text & PDF Files")
+st.title("Ask Questions from Text & PDF Files")
 
 uploaded_files = st.file_uploader("Upload files (PDF, TXT)", type=["pdf", "txt"], accept_multiple_files=True)
 
@@ -32,7 +32,7 @@ def extract_text_from_pdf(file) -> str:
     return text
 
 # Handle uploaded files
-if uploaded_files is not None and len(uploaded_files) > 0:
+if uploaded_files:
     for file in uploaded_files:
         filename = file.name
 
@@ -56,7 +56,7 @@ if uploaded_files is not None and len(uploaded_files) > 0:
             ids=[f"doc-{filename}"]
         )
     
-    st.success(f"✅ {len(uploaded_files)} files uploaded and indexed.")
+    st.success(f" {len(uploaded_files)} files uploaded and indexed.")
 else:
     st.info("Please upload one or more PDF or TXT files.")
 
@@ -68,8 +68,12 @@ if query:
     query_embedding = model.encode(query)
     results = collection.query(query_embeddings=[query_embedding.tolist()], n_results=2)
 
-    st.subheader("🔎 Top Matching Documents:")
-    st.markdown(result.name)
+    st.subheader(" Top Matching Documents:")
+    for i, doc in enumerate(results["documents"][0]):
+    filename = results["metadatas"][0][i]["filename"]
+    st.write(f"File: {filename}")
+    st.write(doc[:300] + "...")
+
 
 
 
