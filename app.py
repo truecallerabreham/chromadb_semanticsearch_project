@@ -8,7 +8,7 @@ import fitz
 # creating client object
 client = chromadb.PersistentClient(path="./chroma_db")
 #creating collection inside our client object
-collection = client.get_or_create_collection(name="first_collection") 
+collection = client.get_or_create_collection(name="second_collection") 
 # loading emedding models for our uploaded files
 model = SentenceTransformer("all-MiniLM-L6-v2")
 st.title("Ask Questions from Text & PDF Files")
