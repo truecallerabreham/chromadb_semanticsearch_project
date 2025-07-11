@@ -69,8 +69,7 @@ if query:
     results = collection.query(query_embeddings=[query_embedding.tolist()], n_results=2)
 
     st.subheader("🔎 Top Matching Documents:")
-    for doc in results["documents"][0]:
-        st.markdown(f"> {doc[:300]}...")  # Preview first 300 characters
+    st.markdown(result["filename"])
 
 
 
