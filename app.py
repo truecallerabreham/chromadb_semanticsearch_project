@@ -8,10 +8,10 @@ import fitz
 # creating client object
 client = chromadb.Client()
 #creating collection inside our client object
-if "first_collection" not in [c.name for c in client.list_collections()]:
-    collection = client.create_collection(name="first_collection")
+if "second_collection" not in [c.name for c in client.list_collections()]:
+    collection = client.create_collection(name="second_collection")
 else:
-    collection = client.get_collection(name="first_collection") 
+    collection = client.get_collection(name="second_collection") 
 # loading emedding models for our uploaded files
 model = SentenceTransformer("all-MiniLM-L6-v2")
 st.title("Ask Questions from Text & PDF Files")
