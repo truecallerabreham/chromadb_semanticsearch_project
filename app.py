@@ -6,7 +6,7 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 import fitz
 # creating client object
-client = chromadb.PersistentClient(path="./chroma_db")
+client = chromadb.Client()
 #creating collection inside our client object
 if "first_collection" not in [c.name for c in client.list_collections()]:
     collection = client.create_collection(name="first_collection")
