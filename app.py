@@ -3,7 +3,7 @@ import pysqlite3
 sys.modules["sqlite3"] = pysqlite3
 import streamlit as st
 import chromadb
-from sentences_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer
 import fitz
 # creating client object
 client = chromadb.PersistentClient(path="./chroma_db")
