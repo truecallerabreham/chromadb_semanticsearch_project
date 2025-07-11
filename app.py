@@ -36,7 +36,7 @@ collection.add(
             ids=[f"doc-{filename}"]
         )
 st.success(f"{len(uploaded_files)} files uploaded and indexed.")
-query = st.text_input("❓ Ask something based on your files")
+query = st.text_input(" Ask something based on your files")
 if query:
     query_embedding = model.encode(query)
     results = collection.query(query_embeddings=[query_embedding.tolist()], n_results=2)
