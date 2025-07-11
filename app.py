@@ -22,7 +22,7 @@ def extract_text_from_pdf(file) -> str:
         for page in pdf:
             text += page.get_text()
     return text
-if uploaded_files:
+if upload_files:
     for file in uploaded_files:
         filename = file.name
         if filename.endswith(".txt"):
